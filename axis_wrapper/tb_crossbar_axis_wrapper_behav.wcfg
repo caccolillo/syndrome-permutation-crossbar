@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_crossbar_axis_wrapper_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_crossbar_axis_wrapper" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0 ps"></ZoomStartTime>
+      <ZoomEndTime time="6 ps"></ZoomEndTime>
+      <Cursor1Time time="1,000,000 ps"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="219"></NameColumnWidth>
+      <ValueColumnWidth column_width="163"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="13" />
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_crossbar_axis_wrapper/dut/s_axis_rx_tdata">
+      <obj_property name="ElementShortName">s_axis_rx_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_rx_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_crossbar_axis_wrapper/dut/s_axis_rx_tkeep">
+      <obj_property name="ElementShortName">s_axis_rx_tkeep[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_rx_tkeep[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/s_axis_rx_tvalid">
+      <obj_property name="ElementShortName">s_axis_rx_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_rx_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/s_axis_rx_tlast">
+      <obj_property name="ElementShortName">s_axis_rx_tlast</obj_property>
+      <obj_property name="ObjectShortName">s_axis_rx_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/s_axis_rx_tready">
+      <obj_property name="ElementShortName">s_axis_rx_tready</obj_property>
+      <obj_property name="ObjectShortName">s_axis_rx_tready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/rx_framing_err">
+      <obj_property name="ElementShortName">rx_framing_err</obj_property>
+      <obj_property name="ObjectShortName">rx_framing_err</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_crossbar_axis_wrapper/dut/m_axis_tx_tdata">
+      <obj_property name="ElementShortName">m_axis_tx_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_tx_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_crossbar_axis_wrapper/dut/m_axis_tx_tkeep">
+      <obj_property name="ElementShortName">m_axis_tx_tkeep[7:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_tx_tkeep[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/m_axis_tx_tvalid">
+      <obj_property name="ElementShortName">m_axis_tx_tvalid</obj_property>
+      <obj_property name="ObjectShortName">m_axis_tx_tvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/m_axis_tx_tlast">
+      <obj_property name="ElementShortName">m_axis_tx_tlast</obj_property>
+      <obj_property name="ObjectShortName">m_axis_tx_tlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_crossbar_axis_wrapper/dut/m_axis_tx_tready">
+      <obj_property name="ElementShortName">m_axis_tx_tready</obj_property>
+      <obj_property name="ObjectShortName">m_axis_tx_tready</obj_property>
+   </wvobject>
+</wave_config>
