@@ -1,0 +1,8 @@
+.Xil/
+*.xml
+*.jou
+*.log
+*.str
+*proj*
+*xgui*
+*.txt
