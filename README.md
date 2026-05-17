@@ -131,12 +131,6 @@ Three other approaches were evaluated and rejected before settling on the `MUXF7
 | Batcher bitonic sorter    | 56 cyc     | ~580K       | 14× latency, ~97× flip-flops                        |
 | Benes network             | 19+ cyc    | low         | Complex Waksman control generation at runtime       |
 
-## Origins
-
-This project originated as a digital-design technical challenge: implement a programmable bitstring-permutation component in SystemVerilog, scalable to 1024 bits, with sub-microsecond reconfiguration on a Xilinx FPGA. The challenge brief weighted correctness, speed, code quality, testing rigour, and documentation as the scoring axes.
-
-The submission was extended significantly beyond the minimum bar — adding an AXI4-Stream wrapper, integration with an Aurora 64B/66B serial link, full end-to-end testbench, and a formal-verification proposal — so the result is a complete IP deliverable rather than a one-file solution.
-
 ## License
 
 MIT — see [LICENSE](LICENSE).
