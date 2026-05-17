@@ -8,7 +8,13 @@ set proj_dir [get_property directory [current_project]]
 
 # Set project properties — $obj must be set BEFORE use
 set obj [current_project]
-set_property -name "board_part"                        -value "xilinx.com:zcu111:part0:1.4" -objects $obj
+# Board version must match the consuming project. The end-system project uses 1.2;
+# packaging this IP against 1.4 will cause:
+#   CRITICAL WARNING: [IP_Flow 19-4965] IP ... was packaged with board value
+#   'xilinx.com:zcu111:part0:1.4'. Current project's board value is
+#   'xilinx.com:zcu111:part0:1.2'.
+# If your installation only has 1.4, change the end-system board to 1.4 too.
+set_property -name "board_part"                        -value "xilinx.com:zcu111:part0:1.2" -objects $obj
 set_property -name "default_lib"                       -value "xil_defaultlib"               -objects $obj
 set_property -name "enable_resource_estimation"        -value "0"                            -objects $obj
 set_property -name "enable_vhdl_2008"                  -value "1"                            -objects $obj
@@ -40,19 +46,24 @@ generate_target all [get_ips runtime_configurable_crossbar_0]
 add_files -norecurse ./crossbar_axis_wrapper.sv
 update_compile_order -fileset sources_1
 
-# Launch synthesis
-#launch_runs synth_1 -jobs 6
-#wait_on_run synth_1
+# Launch synthesis (re-enable to verify the new IO registers improve timing)
+launch_runs synth_1 -jobs 6
+wait_on_run synth_1
 
 # Open synthesized design and save worst 10 timing paths
-#open_run synth_1
-#report_timing \
-#    -max_paths 10 \
-#    -delay_type max \
-#    -path_type full_clock \
-#    -file "$proj_dir/../post_synth_timing_top10.txt"
+open_run synth_1
+report_timing \
+    -max_paths 10 \
+    -delay_type max \
+    -path_type full_clock \
+    -file "$proj_dir/../post_synth_timing_top10.txt"
+
+# Close the synthesis run before re-packaging so IPX doesn't see open design state.
+close_design
 
 # Package as IP core
+# ipx::merge_project_changes hdl_parameters discovers the new RX_PIPE_STAGES
+# and TX_PIPE_STAGES parameters and exposes them in the IP customization GUI.
 update_compile_order -fileset sources_1
 ipx::package_project -root_dir ./ -vendor user.org -library user -taxonomy /UserIP
 ipx::merge_project_changes hdl_parameters [ipx::current_core]

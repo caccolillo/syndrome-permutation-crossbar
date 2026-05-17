@@ -7,10 +7,13 @@
 //
 // Timing budget: 400 MHz (2.5 ns period), 1 us = 400 cycles
 //
-// Minimum cycle count (no stalls):
+// Minimum cycle count (no stalls), parameterised by pipeline depth:
 //   171 (CFG_A) + 171 (CFG_B) + ~2 (RX_WAIT/ready_out) +
-//   16  (DATA in) + 5 (crossbar pipeline) + 16 (TX out) = ~381 cycles
-//   => ~953 ns @ 400 MHz  - PASS, under 1 us by ~19 cycles / ~48 ns
+//   16  (DATA in) + 5 (crossbar pipeline) + 16 (TX out)
+//   + RX_PIPE_STAGES + TX_PIPE_STAGES (skid-buffer latency)
+//   = ~381 + RX_PIPE_STAGES + TX_PIPE_STAGES cycles
+//
+//   Default 2+2 pipeline => ~385 cycles => ~963 ns @ 400 MHz  - PASS
 // =============================================================================
 
 `timescale 1ns/1ps
@@ -20,9 +23,11 @@ module tb_crossbar_axis_wrapper;
     // =========================================================================
     // Parameters
     // =========================================================================
-    localparam int  DATA_WIDTH    = 1024;
-    localparam int  ADDR_WIDTH    = 10;
-    localparam int  CONFIG_WIDTH  = 64;
+    localparam int  DATA_WIDTH     = 1024;
+    localparam int  ADDR_WIDTH     = 10;
+    localparam int  CONFIG_WIDTH   = 64;
+    localparam int  RX_PIPE_STAGES = 2;   // must match DUT instantiation below
+    localparam int  TX_PIPE_STAGES = 2;
 
     localparam int  IDXS_PER_BEAT = CONFIG_WIDTH / ADDR_WIDTH;   // 6
     localparam int  BEATS_CFG     = (DATA_WIDTH + IDXS_PER_BEAT - 1)
@@ -62,9 +67,11 @@ module tb_crossbar_axis_wrapper;
     // DUT
     // =========================================================================
     crossbar_axis_wrapper #(
-        .DATA_WIDTH  (DATA_WIDTH),
-        .ADDR_WIDTH  (ADDR_WIDTH),
-        .CONFIG_WIDTH(CONFIG_WIDTH)
+        .DATA_WIDTH     (DATA_WIDTH),
+        .ADDR_WIDTH     (ADDR_WIDTH),
+        .CONFIG_WIDTH   (CONFIG_WIDTH),
+        .RX_PIPE_STAGES (RX_PIPE_STAGES),
+        .TX_PIPE_STAGES (TX_PIPE_STAGES)
     ) dut (
         .clk              (clk),
         .rst              (rst),
@@ -106,6 +113,12 @@ module tb_crossbar_axis_wrapper;
     initial begin
         $dumpfile("tb_crossbar_axis_wrapper.vcd");
         $dumpvars(0, tb_crossbar_axis_wrapper);
+
+        $display("[INFO] Pipeline configuration: RX_PIPE_STAGES=%0d  TX_PIPE_STAGES=%0d",
+                 RX_PIPE_STAGES, TX_PIPE_STAGES);
+        $display("[INFO] Expected extra latency vs. unpipelined: %0d cycles  (%.1f ns)",
+                 RX_PIPE_STAGES + TX_PIPE_STAGES,
+                 (RX_PIPE_STAGES + TX_PIPE_STAGES) * CLK_PERIOD_NS);
 
         // ---- Reset -----------------------------------------------------------
         repeat (8) @(posedge clk);
@@ -223,6 +236,8 @@ module tb_crossbar_axis_wrapper;
 
         $display("\n=================================================");
         $display(" RESULTS @ 400 MHz  (period = %.3f ns)", CLK_PERIOD_NS);
+        $display(" Pipeline    : RX=%0d stages, TX=%0d stages",
+                 RX_PIPE_STAGES, TX_PIPE_STAGES);
         $display(" Start cycle : %0d  (first RX beat accepted)", start_cycle);
         $display(" End cycle   : %0d  (TX tlast accepted)",      end_cycle);
         $display(" Elapsed     : %0d cycles  =  %.1f ns",  elapsed_cyc, elapsed_ns);
