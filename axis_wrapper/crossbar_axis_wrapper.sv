@@ -146,7 +146,11 @@ module crossbar_axis_wrapper #(
     logic [DATA_WIDTH-1:0]   data_out;
     logic                    data_out_vld;
 
-    runtime_configurable_crossbar_0  u_xbar (
+    runtime_configurable_crossbar_0 #(
+    .DATA_WIDTH   (DATA_WIDTH),
+    .ADDR_WIDTH   (ADDR_WIDTH),
+    .CONFIG_WIDTH (CONFIG_WIDTH)
+    )   u_xbar (
         .clk         (clk),
         .rst         (rst),
         .cfg_restart (cfg_restart),

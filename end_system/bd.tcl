@@ -274,6 +274,11 @@ proc create_root_design { parentCell } {
 
   # Create instance: crossbar_axis_wrapper_0, and set properties
   set crossbar_axis_wrapper_0 [ create_bd_cell -type ip -vlnv user.org:user:crossbar_axis_wrapper:1.0 crossbar_axis_wrapper_0 ]
+  set_property -dict [list \
+    CONFIG.ADDR_WIDTH {7} \
+    CONFIG.DATA_WIDTH {128} \
+  ] $crossbar_axis_wrapper_0
+
 
   # Create instance: ps8_0_axi_periph, and set properties
   set ps8_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 ps8_0_axi_periph ]
