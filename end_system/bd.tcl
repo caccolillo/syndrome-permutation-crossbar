@@ -276,7 +276,7 @@ proc create_root_design { parentCell } {
   set crossbar_axis_wrapper_0 [ create_bd_cell -type ip -vlnv user.org:user:crossbar_axis_wrapper:1.0 crossbar_axis_wrapper_0 ]
   set_property -dict [list \
     CONFIG.ADDR_WIDTH {7} \
-    CONFIG.DATA_WIDTH {128} \
+    CONFIG.DATA_WIDTH {256} \
   ] $crossbar_axis_wrapper_0
 
 
