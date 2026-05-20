@@ -46,20 +46,26 @@ generate_target all [get_ips runtime_configurable_crossbar_0]
 add_files -norecurse ./crossbar_axis_wrapper.sv
 update_compile_order -fileset sources_1
 
+# Generics: set the width of the width of the original/final bitstring
+#set_property generic {DATA_WIDTH=256 ADDR_WIDTH=8 CONFIG_WIDTH=64} [current_fileset]
+#set_property generic {DATA_WIDTH=128 ADDR_WIDTH=7 CONFIG_WIDTH=64} [current_fileset]
+set_property generic {DATA_WIDTH=64 ADDR_WIDTH=6 CONFIG_WIDTH=64} [current_fileset]
+#set_property generic {DATA_WIDTH=32 ADDR_WIDTH=5 CONFIG_WIDTH=64} [current_fileset]
+
 # Launch synthesis (re-enable to verify the new IO registers improve timing)
-launch_runs synth_1 -jobs 6
-wait_on_run synth_1
+#launch_runs synth_1 -jobs 6
+#wait_on_run synth_1
 
 # Open synthesized design and save worst 10 timing paths
-open_run synth_1
-report_timing \
-    -max_paths 10 \
-    -delay_type max \
-    -path_type full_clock \
-    -file "$proj_dir/../post_synth_timing_top10.txt"
+#open_run synth_1
+#report_timing \
+#    -max_paths 10 \
+#    -delay_type max \
+#    -path_type full_clock \
+#    -file "$proj_dir/../post_synth_timing_top10.txt"
 
 # Close the synthesis run before re-packaging so IPX doesn't see open design state.
-close_design
+#close_design
 
 # Package as IP core
 # ipx::merge_project_changes hdl_parameters discovers the new RX_PIPE_STAGES
