@@ -55,8 +55,8 @@
 //   CONFIG_WIDTH : configuration bus width (fixed at 64)
 // =============================================================================
 module runtime_configurable_crossbar #(
-    parameter int DATA_WIDTH   = 1024,
-    parameter int ADDR_WIDTH   = 10,
+    parameter int DATA_WIDTH   = 256,
+    parameter int ADDR_WIDTH   = 8,
     parameter int CONFIG_WIDTH = 64
 )(
     input  logic                    clk,

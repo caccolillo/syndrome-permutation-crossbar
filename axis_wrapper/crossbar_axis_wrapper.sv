@@ -33,8 +33,8 @@
 // =============================================================================
 
 module crossbar_axis_wrapper #(
-    parameter int DATA_WIDTH      = 1024,
-    parameter int ADDR_WIDTH      = 10,
+    parameter int DATA_WIDTH      = 256,
+    parameter int ADDR_WIDTH      = 8,
     parameter int CONFIG_WIDTH    = 64,
     parameter int RX_PIPE_STAGES  = 2,   // # of AXIS skid stages on RX input
     parameter int TX_PIPE_STAGES  = 2    // # of AXIS skid stages on TX output
