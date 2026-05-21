@@ -28,8 +28,8 @@ use ieee.std_logic_1164.all;
 
 entity crossbar_axis_wrapper_vhdl is
     generic (
-        DATA_WIDTH     : integer := 256;
-        ADDR_WIDTH     : integer := 8;
+        DATA_WIDTH     : integer := 128;
+        ADDR_WIDTH     : integer := 7;
         CONFIG_WIDTH   : integer := 64;
         RX_PIPE_STAGES : integer := 2;
         TX_PIPE_STAGES : integer := 2
