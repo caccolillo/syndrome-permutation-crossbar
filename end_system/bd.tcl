@@ -40,7 +40,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# aurora_top
+# aurora_top, crossbar_axis_wrapper_vhdl
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -133,7 +133,6 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:axis_data_fifo:2.0\
-user.org:user:crossbar_axis_wrapper:1.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:util_vector_logic:2.0\
 xilinx.com:ip:xlconcat:2.1\
@@ -166,6 +165,7 @@ set bCheckModules 1
 if { $bCheckModules == 1 } {
    set list_check_mods "\ 
 aurora_top\
+crossbar_axis_wrapper_vhdl\
 "
 
    set list_mods_missing ""
@@ -272,14 +272,17 @@ proc create_root_design { parentCell } {
   ] $axis_data_fifo_1
 
 
-  # Create instance: crossbar_axis_wrapper_0, and set properties
-  set crossbar_axis_wrapper_0 [ create_bd_cell -type ip -vlnv user.org:user:crossbar_axis_wrapper:1.0 crossbar_axis_wrapper_0 ]
-  set_property -dict [list \
-    CONFIG.ADDR_WIDTH {7} \
-    CONFIG.DATA_WIDTH {256} \
-  ] $crossbar_axis_wrapper_0
-
-
+  # Create instance: crossbar_axis_wrappe_0, and set properties
+  set block_name crossbar_axis_wrapper_vhdl
+  set block_cell_name crossbar_axis_wrappe_0
+  if { [catch {set crossbar_axis_wrappe_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $crossbar_axis_wrappe_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: ps8_0_axi_periph, and set properties
   set ps8_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 ps8_0_axi_periph ]
   set_property -dict [list \
@@ -650,9 +653,9 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
 
   # Create interface connections
   connect_bd_intf_net -intf_net aurora_top_0_m_axis_rx [get_bd_intf_pins aurora_top_0/m_axis_rx] [get_bd_intf_pins axis_data_fifo_0/S_AXIS]
-  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS [get_bd_intf_pins axis_data_fifo_0/M_AXIS] [get_bd_intf_pins crossbar_axis_wrapper_0/s_axis_rx]
+  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS [get_bd_intf_pins axis_data_fifo_0/M_AXIS] [get_bd_intf_pins crossbar_axis_wrappe_0/s_axis_rx]
   connect_bd_intf_net -intf_net axis_data_fifo_1_M_AXIS [get_bd_intf_pins aurora_top_0/s_axis_tx] [get_bd_intf_pins axis_data_fifo_1/M_AXIS]
-  connect_bd_intf_net -intf_net crossbar_axis_wrapper_0_m_axis_tx [get_bd_intf_pins axis_data_fifo_1/S_AXIS] [get_bd_intf_pins crossbar_axis_wrapper_0/m_axis_tx]
+  connect_bd_intf_net -intf_net crossbar_axis_wrappe_0_m_axis_tx [get_bd_intf_pins axis_data_fifo_1/S_AXIS] [get_bd_intf_pins crossbar_axis_wrappe_0/m_axis_tx]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M00_AXI]
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_FPD [get_bd_intf_pins ps8_0_axi_periph/S00_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_FPD]
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM1_FPD [get_bd_intf_pins ps8_0_axi_periph/S01_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM1_FPD]
@@ -667,8 +670,8 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net aurora_top_0_soft_err [get_bd_pins aurora_top_0/soft_err] [get_bd_pins xlconcat_0/In3]
   connect_bd_net -net aurora_top_0_tx_lock [get_bd_pins aurora_top_0/tx_lock] [get_bd_pins xlconcat_0/In5]
   connect_bd_net -net aurora_top_0_user_clk_out [get_bd_pins aurora_top_0/user_clk_out] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/m_axis_aclk] [get_bd_pins xpm_cdc_gen_0/dest_clk]
-  connect_bd_net -net axi_gpio_0_gpio2_io_o [get_bd_pins aurora_top_0/reset] [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins crossbar_axis_wrapper_0/rst] [get_bd_pins util_vector_logic_0/Op1]
-  connect_bd_net -net crossbar_axis_wrapper_0_rx_framing_err [get_bd_pins crossbar_axis_wrapper_0/rx_framing_err] [get_bd_pins xlconcat_0/In6]
+  connect_bd_net -net axi_gpio_0_gpio2_io_o [get_bd_pins aurora_top_0/reset] [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins crossbar_axis_wrappe_0/rst] [get_bd_pins util_vector_logic_0/Op1]
+  connect_bd_net -net crossbar_axis_wrappe_0_rx_framing_err [get_bd_pins crossbar_axis_wrappe_0/rx_framing_err] [get_bd_pins xlconcat_0/In6]
   connect_bd_net -net mgt_refclk_n_0_1 [get_bd_ports mgt_refclk_n_0] [get_bd_pins aurora_top_0/mgt_refclk_n]
   connect_bd_net -net mgt_refclk_p_0_1 [get_bd_ports mgt_refclk_p_0] [get_bd_pins aurora_top_0/mgt_refclk_p]
   connect_bd_net -net rst_ps8_0_99M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn] [get_bd_pins ps8_0_axi_periph/ARESETN] [get_bd_pins ps8_0_axi_periph/M00_ARESETN] [get_bd_pins ps8_0_axi_periph/S00_ARESETN] [get_bd_pins ps8_0_axi_periph/S01_ARESETN] [get_bd_pins rst_ps8_0_99M/peripheral_aresetn]
@@ -678,7 +681,7 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net xlconcat_0_dout [get_bd_pins axi_gpio_0/gpio_io_i] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins aurora_top_0/s_axis_tx_tvalid] [get_bd_pins xlconstant_0/dout]
   connect_bd_net -net xpm_cdc_gen_0_dest_out [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins xpm_cdc_gen_0/dest_out]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins aurora_top_0/init_clk] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axis_data_fifo_0/m_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins crossbar_axis_wrapper_0/clk] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins ps8_0_axi_periph/S01_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins xpm_cdc_gen_0/src_clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm1_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins aurora_top_0/init_clk] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axis_data_fifo_0/m_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins crossbar_axis_wrappe_0/clk] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins ps8_0_axi_periph/S01_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins xpm_cdc_gen_0/src_clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm1_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins rst_ps8_0_99M/ext_reset_in] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
 
   # Create address segments

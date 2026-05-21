@@ -48,8 +48,8 @@ update_compile_order -fileset sources_1
 
 # Generics: set the width of the width of the original/final bitstring
 #set_property generic {DATA_WIDTH=256 ADDR_WIDTH=8 CONFIG_WIDTH=64} [current_fileset]
-#set_property generic {DATA_WIDTH=128 ADDR_WIDTH=7 CONFIG_WIDTH=64} [current_fileset]
-set_property generic {DATA_WIDTH=64 ADDR_WIDTH=6 CONFIG_WIDTH=64} [current_fileset]
+set_property generic {DATA_WIDTH=128 ADDR_WIDTH=7 CONFIG_WIDTH=64} [current_fileset]
+#set_property generic {DATA_WIDTH=64 ADDR_WIDTH=6 CONFIG_WIDTH=64} [current_fileset]
 #set_property generic {DATA_WIDTH=32 ADDR_WIDTH=5 CONFIG_WIDTH=64} [current_fileset]
 
 # Launch synthesis (re-enable to verify the new IO registers improve timing)

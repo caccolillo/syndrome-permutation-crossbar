@@ -21,8 +21,8 @@
 #    Default: 156.250 MHz  →  must be reprogrammed to 161.1328125 MHz
 #    for exact 25.78125 Gbps.  Connect to Bank 128 MGTREFCLK0.
 ##############################################################################
-set_property PACKAGE_PIN V31 [get_ports mgt_refclk_p]
-set_property PACKAGE_PIN V32 [get_ports mgt_refclk_n]
+set_property PACKAGE_PIN V31 [get_ports mgt_refclk_p_0]
+set_property PACKAGE_PIN V32 [get_ports mgt_refclk_n_0]
 
 # GTY refclk pins do not use an I/O standard — no set_property IOSTANDARD needed.
 # The IBUFDS_GTE4 in the RTL handles these pins.
